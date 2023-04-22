@@ -93,7 +93,7 @@ class UserDetailSerializer(serializers.ModelSerializer):
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ['name', 'avatar', 'created_at', 'updated_at']
+        fields = ['name', 'avatar', 'language', 'color_theme', 'created_at', 'updated_at']
 
     def create(self, validated_data):
         user = self.context['request'].user

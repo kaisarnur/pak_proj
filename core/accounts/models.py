@@ -48,10 +48,15 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class Profile(models.Model):
+    LANGUAGE_CHOICE = [('kz', 'kz'), ('ru', 'ru'), ('en', 'en')]
+    COLOR_THEME = [('black', 'black'), ('white', 'white')]
+
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, related_name='profile', verbose_name='User')
     name = models.CharField(max_length=150, verbose_name='Name')
     avatar = models.ImageField(verbose_name='Avatar')
+    language = models.CharField(choices=LANGUAGE_CHOICE, max_length=5, verbose_name='Language')
+    color_theme = models.CharField(choices=COLOR_THEME, max_length=50, verbose_name='Color theme')
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
