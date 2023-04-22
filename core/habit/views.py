@@ -1,3 +1,40 @@
-from django.shortcuts import render
+from rest_framework import permissions, viewsets, status
+from rest_framework.generics import get_object_or_404
+from rest_framework.response import Response
 
-# Create your views here.
+from habit.serializers import HabitSerializer
+
+
+class HabitViewSet(viewsets.GenericViewSet):
+    serializer_class = HabitSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return self.request.user.habits.all()
+
+    def list(self, request):
+        serializer = self.serializer_class(self.get_queryset(), many=True)
+        return Response(serializer.data)
+
+    def create(self, request):
+        serializer = self.serializer_class(data=request.data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        serializer.save(user=request.user)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def retrieve(self, request, pk=None):
+        habit = get_object_or_404(self.get_queryset(), pk=pk)
+        serializer = self.serializer_class(habit)
+        return Response(serializer.data)
+
+    def update(self, request, pk=None):
+        habit = get_object_or_404(self.get_queryset(), pk=pk)
+        serializer = self.serializer_class(habit, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(user=request.user)
+        return Response(serializer.data)
+
+    def destroy(self, request, pk=None):
+        habit = get_object_or_404(self.get_queryset(), pk=pk)
+        habit.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
