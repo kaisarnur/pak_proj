@@ -8,7 +8,7 @@ services:
       - .:/code
     ports:
       - "8080:8080"
-    command: gunicorn --bind :8080 --workers 2 core.wsgi:application
+    command: bash -c "python3 manage.py migrate && gunicorn --bind :8080 --workers 4 core.wsgi:application"
     restart: always
     depends_on:
       - db
