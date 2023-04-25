@@ -18,3 +18,13 @@ class Habit(models.Model):
 
     def __str__(self):
         return f'{self.user.email}: {self.title}'
+
+
+class Tracking(models.Model):
+    habit = models.ForeignKey(
+        Habit, on_delete=models.CASCADE, related_name='trackings', verbose_name='Habit')
+    amount_of_days = models.IntegerField(verbose_name='Amount of days')
+    done_date = models.DateField(verbose_name='Done date')
+
+    def __str__(self):
+        return f'{self.habit.title}: {self.done_date}'
